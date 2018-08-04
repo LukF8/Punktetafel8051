@@ -1,0 +1,5 @@
+# MCU 8051 IDE: Virtual HW component configuration file
+# Project: Punktetafel
+# Component: Multiplexed LED Display
+
+MultiplexedLedDisplay {{0 1 1 1 2 1 3 1 4 1 T0 2 5 1 T1 2 6 1 T2 2 7 1 T3 2} {0 7 1 6 2 5 3 4 4 3 T0 3 5 2 T1 2 6 1 T2 1 7 0 T3 0} {} {Minuten ---- Sekunden} red 200 1 0}

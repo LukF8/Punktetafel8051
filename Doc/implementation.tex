@@ -1,0 +1,121 @@
+\chapter{Implementation}
+\label{cha:Implementation}
+
+
+Im folgenden Kapitel wird die Implementation des Programmes beschrieben. Da eine komplette Beschreibung des Codes den Rahmen sprengen würde, werden hier nur ausgewählte Abschnitte des Programmes beschrieben.
+
+Zu Beginn des Programmes werden die beschrieben Speicheradressen festgelegt und den Variablen Werte zugewiesen. Im Anschluss daran wird der Timer initialisiert.
+
+Zu Beginn des Ablauf des Hauptprogrammes werden alle Zahlen der 7 Segmentanzeigen neu gezeichnet. Dieses Zeichnen wird im Folgenden genauer beschrieben. 
+\label{code:methode}
+ \begin{GenericCode}
+zeigeAlleSemente: 
+push 00h	;Sichere R0
+push 01h	;Sichere R1	
+push 02h	;Sichere R2	
+mov R0, #00d	;aktuelles segment
+mov R1, #00d	;Pointer für wert von segment
+
+mov A, #01d
+cpl A
+mov R2, A	;selectiertes segment... wird rotiert
+
+;clear all 7segs 
+mov P2, #00h
+mov P0, #0FFh
+mov P1, #0FFh
+mov P2, #0FFh 
+
+loopAlleSegmente:
+CJNE R0, #08d, doFuerSegment     ;für alle 8 segmente
+pop 02h		;Wiederherstellen von R2
+pop 01h		;Wiederherstellen von R1
+pop 00h		;Wiederherstellen von R0
+ret
+
+doFuerSegment:
+;	Lade Segment mit entsprechendem Wert
+mov p2, R2	;aktivate segment mit P2
+
+
+
+mov A, R0	;get wert für
+;60h start adresse für die Sement werte s.o.
+Add A, #060h	;aktuelles Segment?  
+mov R1, A
+mov A, @R1
+
+mov dptr, #numbers	;hole richtigs 7Seg code
+movc a,@a+dptr
+mov p0, a	;gib 7seg code auf P0 aus
+mov p1, a	;gib 7seg code auf P1 aus
+
+mov p2, #0FFh	;deaktivte 7Seg
+mov p1, #0FFh	;deaktivte 7Seg
+mov p0, #0FFh	;deaktivte 7Seg
+
+
+; Select nächstes Segment 
+mov A, R2
+RL A
+mov R2, A
+
+;continue loop
+Inc R0
+
+ljmp loopAlleSegmente
+	
+\end{GenericCode}
+
+Zu Beginn des Aufrufs von ZeigeAlleSegemente (\ref{code:methode}) werden die Register 0 bis 2 auf dem Stack gespeichert. In die Register 0 und 1 wird 0 geschrieben. Anschließend wird dann der Wert 1 in den Akku geladen. Anschließend wird das Komplementär dieses Wertes gebildet. Somit sind alle Stellen der 8 bit Zahl außer der rechten 1. Die Binär-Zahl ist also 11111110. Dieser Wert wird in das Register 2 geladen. 
+
+Nach dieser Initialisierung findet ein Loop durch die 8 Stellen der Anzeige statt. Dafür wird anfangs verglichen ob schon bereits alle Werte neu geschrieben wurden, indem der Wert von Register 0 mit 8 verglichen wird. R0 speichert also die jeweilige Stelle die adressiert wird. Zu Beginn eines Ablaufes, wird das passende Segment mithilfe des in Register 2 gespeicherten Wertes ausgewählt und so auf 0 gesetzt. Anschließend wird mithilfe des Registers 0 der passenden aktuelle Wert aus dem Speicher ausgewählt. Das passiert in dem der Wert aus R0 um 60 erhöht wird, so adressiert er die passende Speicherstelle. Im Anschluss wird der Wert aus der Datenbank ausgelesen. Anschließend werden alle Anzeigen wieder deaktiviert, damit die Werte neu gezeichnet werden können. 
+
+Am Ende eines Durchlaufes wird der in R2 gespeicherte Wert nach links rotiert, so dass die 0 innerhalb der Zahl um eine Stelle nach links rückt und beim nächsten Mal die passende Zahl in der Anzeige im nächsten Durchlauf ausgewählt wird. Zudem wird der "Counter" Register 0 um eins erhöht.
+
+Nach dem Ablauf des Neu Zeichnens der Zahlen, finden Überprüfungen statt, ob einer der Knöpfe gedrückt worden ist. Dabei werden nur dann Aktionen ausgeführt, wenn der Knopf gedrückt wurde. Eine wichtige Funktion ist dabei die passende Auswahl des Spielstandes. Dabei wird wenn der Knopf gedrückt wurde, folgende Funktion aufgerufen:
+
+ \begin{GenericCode}
+	countupPunkte: 	
+	push 00h
+	push 01h
+	cjne R1, #00d, runtercount
+	;Count Hoch
+	INC @R0
+	cjne @R0, #010d, fertigcountPunkte
+	mov @R0, #00d
+	INC R0
+	INC @R0
+	cjne @R0, #10d, fertigcountPunkte
+	mov @R0, #00d
+	DEC R0
+	mov @R0, #00d 
+	ljmp fertigcountPunkte 
+	
+	
+	runtercount:
+	;Count Runter
+	DEC @R0
+	cjne @R0, #0FFh, fertigcountPunkte
+	mov @R0, #09d
+	INC R0
+	DEC @R0
+	cjne @R0, #0FFh, fertigcountPunkte
+	mov @R0, #09d
+	DEC R0
+	mov @R0, #09d  
+	
+	
+	fertigcountPunkte: 
+	pop 01h
+	pop 00h
+	ret
+	
+\end{GenericCode}
+
+Zu Beginn des Aufrufs der Funktion werden die Werte aus Register 0 und 1 auf den Stack abgelegt. Anschließend wird überprüft, ob der Wert hoch oder runtergezählt werden soll. Dies geschieht durch einen Abgleich mit Register 1 indem vor Aufruf der Funktion der Wert 0 bzw. 1 gespeichert wurde. Abhängig davon wird nach einem Abgleich die passende Methode aufgerufen. Innerhalb der Mehtoden wird dann der Wert auf der Anzeige um eins erhöht. Dabei muss darauf geachtet werden, dass der Wert passend erhöht wird und nicht ein falscher Wert angezeigt wird. Dabei wird beim Herunterzählen geprüft ob die Zehner und Einerstelle passend (nicht größer als 9) ist. Gleichartig  wird beim Runterzählen darauf geachtet, dass der Wert nicht kleiner als 0 wird. 
+
+Neben diesen Überprüfungen gibt es weitere Funktionen, die die Zeit anhalten und alle Werte auf 0 setzen.
+
+
+

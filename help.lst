@@ -1,0 +1,424 @@
+help                                                                                                                    PAGE 1
+                         1
+                         2     ;; Nachslagwerk:
+                         3     ;#############################################
+                         4
+0000 74FE                5     mov A, #0254d   ;Akku laden mit Const
+0002 7F01                6     mov R7, #01h    ;Register laden mit Const
+0004 755013              7     mov 50h, #023o  ;Adr laden mit Const
+0007 00                  8     nop
+                         9
+0008 EF                 10     mov A, R7       ;Register in Akku laden
+0009 F8                 11     mov R0, A       ;Akku in Register laden
+000A E550               12     mov A, 50h      ;Adr in Akku laden
+000C F551               13     mov 51h, A      ;Akku in Adr laden
+000E A951               14     mov R1, 51h     ;Adr in Register laden
+0010 8952               15     mov 52h, R1     ;Register in Adr laden
+0012 855453             16     mov 53h, 54h    ;Adr in Adr laden
+                        17
+                        18
+0015 7854               19     mov R0, #054h   ;Zieladresse/Quelladresse - for demo purpose
+0017 7955               20     mov R1, #055h   ;Zieladresse/Quelladresse - for demo purpose
+0019 E6                 21     mov A, @R0      ;Data@Adr R0/R1 in Akku laden
+001A F7                 22     mov @R1, A      ;Akku in Data@Adr R0/R1 laden
+001B 8756               23     mov 56h, @R1    ;Data@Adr R0/R1 in Adr laden
+001D 772A               24     mov @R1, #042d  ;Const in Data@Adr R0/R1 laden
+001F A655               25     mov @R0, 55h    ;Adr in Data@Adr R0/R1 laden
+                        26
+0021 C055               27     push 55h        ;Push Adr
+0023 D057               28     pop 57h         ;Pop Adr
+                        29
+0025 00                 30     nop             ;No operation
+0026 D3                 31     setb C          ;Set C - for demo purpose
+0027 9250               32     mov 50h, C      ;Carry in BAdr laden
+0029 A251               33     mov C, 51h      ;BADr in Carry laden
+002B 90FFAA             34     mov dptr, #0FFAAh ;16Const in DPTR laden
+                        35
+002E C8                 36     XCH A, R0       ;Tausche Akku mit Register
+002F C555               37     XCH A, 55h      ;Tausche Akku mit Adr
+0031 C6                 38     XCH A, @R0      ;Tausche Akku mit Data@Adr R0/R1
+0032 D7                 39     XCHD A, @R1     ;Tausche Akku mit Data@Adr R0/R1 NUR LOW-Nibble!
+0033 E2                 40     MovX A, @R0     ;EXT Data@Adr R0/R1 in Akku laden
+0034 F3                 41     MovX @R1, A     ;Akku in EXT Data@Adr R0/R1  laden
+                        42
+0035 E0                 43     movX A, @DPTR   ;EXT Data@Adr in Akku laden
+0036 F0                 44     movX @DPTR, A   ; Akku in EXT Data@Adr laden
+                        45
+0037 93                 46     movC A, @A+DPTR ;Const aus EEPROM in Akku laden
+0038 83                 47     movC A, @A+PC   ;Const aus EEPROM in Akku laden
+                        48
+                        49     ;#############################################
+                        50
+0039 E4                 51     clr A           ;Akku leeren
+003A F4                 52     cpl A           ;Komplement des Akku
+003B 04                 53     Inc A           ;Akku++
+003C 08                 54     INC R0          ;Register++
+003D 0557               55     INC 57h         ;Adr++
+003F A3                 56     INC DPTR        ;DPTR++
+                        57
+                        58
+                        59
+0040 07                 60     INC @R1         ;Data@Adr R0/R1++
+                        61
+0041 14                 62     DEC A           ;Akku--
+0042 18                 63     DEC R0          ;Register--
+0043 1556               64     DEC 56h         ;Adr--
+                        65
+0045 17                 66     DEC @R1         ;Data@Adr R0/R1--
+                        67
+0046 242A               68     ADD A, #042d    ;Akku + Const
+0048 342A               69     AddC A, #042d   ;Akku + Const + Carry
+004A 2C                 70     Add A, R4       ;Akku + Register
+004B 3C                 71     AddC A, R4      ;Akku + Register + Carry
+004C 2552               72     Add A, 052h     ;Akku + Adr
+004E 3552               73     AddC A, 052h    ;Akku + Adr + Carry
+                        74
+0050 26                 75     Add A, @R0      ;Akku + Data@Adr R0/R1
+0051 36                 76     AddC A, @R0     ;Akku + Data@Adr R0/R1 + Carry
+                        77
+0052 942A               78     Subb A, #042d   ;Akku - Const - Carry
+0054 9552               79     Subb A, 052h    ;Akku - Adr - Carry
+0056 9D                 80     Subb A, R5      ;Akku - Register - Carry
+0057 97                 81     Subb A, @R1     ;Akku - Data@Adr R0/R1 - Carry
+                        82
+0058 C4                 83     Swap A          ;Tausche Low gegen High-Nibble
+0059 A4                 84     Mul AB          ;BA = A * B
+005A 84                 85     DIV AB          ;AB = A / B  (B ist der rest)
+                        86
+005B 23                 87     RL A            ;Rotiere nach links (bit 7 in bit0)
+005C 33                 88     RLC A           ;Rotiere nach links mit carry (carry in bit0)
+005D 03                 89     RR A            ;Rotiere nach Rechts (bit0 in bit7)
+005E 13                 90     RRC A           ;Rotiere nach rechts mit carry (bit0 in carry)
+                        91
+005F D3                 92     SetB C          ;Setze Carry 1
+0060 C3                 93     CLR C           ;leere Carry
+0061 B3                 94     CPL C           ;Komplement vom Carry
+                        95
+0062 D242               96     SetB 042h       ;Setze BAdr auf 1
+0064 C242               97     CLR 042h        ;Leere BAdr
+0066 B242               98     CPL 042h        ;Komplement der BAdr
+                        99
+                       100
+                       101     ;####################################################
+                       102
+0068 542A              103     ANL A, #042d    ;Akku Bitweises Und mit Const
+006A 5D                104     ANL A, R5       ;Akku Bitweises Und mit Register
+006B 5550              105     ANL A, 050h     ;Akku Bitweises Und mit Adr
+006D 53512A            106     ANL 051h, #042d ;Adr Bitweises Und mit Const
+0070 5251              107     ANL 051h, A     ;Adr Bitweises Und mit Akku
+0072 8242              108     ANL C, 042h     ;Carry Bitweises Und mit BAdr
+0074 B042              109     ANL C, /042h    ;Carry Bitweises Und mit invertiertem BAdr
+                       110
+0076 56                111     ANL A, @R0      ;;Akku Bitweises Und mit Data@Adr R0/R1
+                       112
+0077 442A              113     ORL A, #042d    ;Akku Bitweises Oder mit Const
+0079 43512A            114     ORL 051h, #042d ;Adr Bitweises Oder mit Const
+007C 48                115     ORL A, R0       ;Akku Bitweises Oder mit Register
+007D 4551              116     ORL A, 051h     ;Akku Bitweises Oder mit Adr
+007F 4251              117     ORL 051h, A     ;Adr Bitweises Oder mit Akku
+0081 7242              118     ORL C, 042h     ;Carry Bitweises Oder mit BAdr
+0083 A042              119     ORL C, /042h    ;Carry Bitweises Oder mit invertiertem BAdr
+                       120
+0085 46                121     ORL A, @R0      ;Akku Bitweises Oder mit Data@Adr R0/R1
+                       122
+0086 642A              123     XRL A, #042d    ;Akku Bitweises XOR mit Const
+0088 63512A            124     XRL 051h, #042d ;Adr Bitweises XOR mit Const
+008B 68                125     XRL A, R0       ;Akku Bitweises XOR mit Register
+008C 6542              126     XRL A, 042h     ;Akku Bitweises XOR mit Adr
+008E 6242              127     XRL 042h, A     ;Adr Bitweises XOR mit Akku
+                       128
+0090 66                129     XRL A, @R0      ;Akku Bitweises XOR mit Data@Adr R0/R1
+                       130
+                       131
+                       132     ;####################################################
+                       133
+                       134
+0091 020095            135     LJmp label1     ;long jump 16bit
+0094 00                136     nop
+                       137     label1:
+                       138
+0095 8001              139     sjmp relativ1   ;relativer jump 8bit
+0097 00                140     nop
+                       141     relativ1:
+                       142
+0098 019B              143     ajmp next1      ;short jump 11bit
+009A 00                144     nop
+                       145     next1:
+                       146
+009B 9000A2            147     mov DPTR, #calc1
+009E 7400              148     mov A, #0h
+00A0 73                149     jmp @A+DPTR     ;Brechneter jump
+00A1 00                150     nop
+                       151     calc1:
+                       152
+00A2 102A01            153     JBC 042d, bc1   ;springe bei gesetzer BAdr und lösche es
+00A5 00                154     nop
+                       155     bc1:
+                       156
+00A6 202A01            157     JB 042d, bc2    ;springe bei gesetzer BAdr
+00A9 00                158     nop
+                       159     bc2:
+                       160
+00AA 302A01            161     JNB 042d, bc3   ;springe bei nicht gesetzer BAdr
+00AD 00                162     nop
+                       163     bc3:
+                       164
+00AE 4001              165     Jc carry1       ;Springe bei gesetztem carry
+00B0 00                166     nop
+                       167     carry1:
+                       168
+00B1 5001              169     Jnc carry2      ;Springe bei nicht gesetztem carry
+00B3 00                170     nop
+                       171     carry2:
+                       172
+00B4 6001              173     Jz akku1        ;Springe wenn akku = 0
+00B6 00                174     nop
+                       175     akku1:
+                       176
+00B7 7001              177     Jnz akku2       ;Springe wenn akku nicht = 0
+00B9 00                178     nop
+                       179     akku2:
+                       180
+00BA D801              181     DJnz R0, reg0   ;Register--; Springe wenn register nicht = 0
+00BC 00                182     nop
+                       183     reg0:
+                       184
+00BD D55301            185     DJnz 053h, adr0 ;Adr--; Springe wenn register nicht = 0
+00C0 00                186     nop
+                       187     adr0:
+                       188
+00C1 B41801            189     CJNE A, #024d, akku3    ;vergleiche Akku mit Const
+00C4 00                190     nop
+                       191     akku3:
+                       192
+00C5 B81801            193     CJNE R0, #024d, reg1    ;vergleiche Register mit Const
+00C8 00                194     nop
+                       195     reg1:
+                       196
+00C9 B54201            197     CJNE A, 042h, akku4     ;vergleiche Akku mit Adr
+00CC 00                198     nop
+                       199     akku4:
+                       200
+00CD B61801            201     CJNE @R0, #024d, ref0   ;vergleiche Data@Adr R0/R1 mit Const
+00D0 00                202     nop
+                       203     ref0:
+                       204
+00D1 1200D7            205     LCALL lol       ;long call -- ACall = short call
+00D4 0200D8            206     LJMP endtag
+                       207
+                       208     lol:
+00D7 22                209     ret             ;reti for interrupt
+                       210
+                       211
+                       212     endtag:
+00D8 00                213     nop
+                       214
+                       215
+                       216
+****WARNING:Missing`END'directive
+ASSEMBLY COMPLETE, NO ERRORS FOUND, 1 WARNING
+
+
+ERROR SUMMARY:
+Line 216, WARNING:Missing`END'directive
+
+SYMBOL TABLE:
+??MCU_8051_IDE . . . . . . . . . . .  N  NUMB  8051H  NOT USED
+??VERSION. . . . . . . . . . . . . .  N  NUMB  0149H  NOT USED
+AC . . . . . . . . . . . . . . . . .  B  ADDR  00D6H  NOT USED
+ACC. . . . . . . . . . . . . . . . .  D  ADDR  00E0H  NOT USED
+ACSR . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+ADCF . . . . . . . . . . . . . . . .  D  ADDR  00F6H  NOT USED
+ADCLK. . . . . . . . . . . . . . . .  D  ADDR  00F2H  NOT USED
+ADCON. . . . . . . . . . . . . . . .  D  ADDR  00F3H  NOT USED
+ADDH . . . . . . . . . . . . . . . .  D  ADDR  00F5H  NOT USED
+ADDL . . . . . . . . . . . . . . . .  D  ADDR  00F4H  NOT USED
+ADR0 . . . . . . . . . . . . . . . .  C  ADDR  00C1H
+AKKU1. . . . . . . . . . . . . . . .  C  ADDR  00B7H
+AKKU2. . . . . . . . . . . . . . . .  C  ADDR  00BAH
+AKKU3. . . . . . . . . . . . . . . .  C  ADDR  00C5H
+AKKU4. . . . . . . . . . . . . . . .  C  ADDR  00CDH
+AUXR . . . . . . . . . . . . . . . .  D  ADDR  008EH  NOT USED
+AUXR1. . . . . . . . . . . . . . . .  D  ADDR  00A2H  NOT USED
+B. . . . . . . . . . . . . . . . . .  D  ADDR  00F0H  NOT USED
+BC1. . . . . . . . . . . . . . . . .  C  ADDR  00A6H
+BC2. . . . . . . . . . . . . . . . .  C  ADDR  00AAH
+BC3. . . . . . . . . . . . . . . . .  C  ADDR  00AEH
+BDRCON . . . . . . . . . . . . . . .  D  ADDR  009BH  NOT USED
+BDRCON_1 . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+BRL. . . . . . . . . . . . . . . . .  D  ADDR  009AH  NOT USED
+CALC1. . . . . . . . . . . . . . . .  C  ADDR  00A2H
+CARRY1 . . . . . . . . . . . . . . .  C  ADDR  00B1H
+CARRY2 . . . . . . . . . . . . . . .  C  ADDR  00B4H
+CCAP0H . . . . . . . . . . . . . . .  D  ADDR  00FAH  NOT USED
+CCAP0L . . . . . . . . . . . . . . .  D  ADDR  00EAH  NOT USED
+CCAP1H . . . . . . . . . . . . . . .  D  ADDR  00FBH  NOT USED
+CCAP1L . . . . . . . . . . . . . . .  D  ADDR  00EBH  NOT USED
+CCAP2H . . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAP3H . . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAP4H . . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL2H. . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAPL2L. . . . . . . . . . . . . . .  D  ADDR  00ECH  NOT USED
+CCAPL3H. . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAPL3L. . . . . . . . . . . . . . .  D  ADDR  00EDH  NOT USED
+CCAPL4H. . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL4L. . . . . . . . . . . . . . .  D  ADDR  00EEH  NOT USED
+CCAPM0 . . . . . . . . . . . . . . .  D  ADDR  00DAH  NOT USED
+CCAPM1 . . . . . . . . . . . . . . .  D  ADDR  00DBH  NOT USED
+CCAPM2 . . . . . . . . . . . . . . .  D  ADDR  00DCH  NOT USED
+CCAPM3 . . . . . . . . . . . . . . .  D  ADDR  00DDH  NOT USED
+CCAPM4 . . . . . . . . . . . . . . .  D  ADDR  00DEH  NOT USED
+CCF0 . . . . . . . . . . . . . . . .  B  ADDR  00D8H  NOT USED
+CCF1 . . . . . . . . . . . . . . . .  B  ADDR  00D9H  NOT USED
+CCF2 . . . . . . . . . . . . . . . .  B  ADDR  00DAH  NOT USED
+CCF3 . . . . . . . . . . . . . . . .  B  ADDR  00DBH  NOT USED
+CCF4 . . . . . . . . . . . . . . . .  B  ADDR  00DCH  NOT USED
+CCON . . . . . . . . . . . . . . . .  D  ADDR  00D8H  NOT USED
+CFINT. . . . . . . . . . . . . . . .  C  ADDR  0033H  NOT USED
+CH . . . . . . . . . . . . . . . . .  D  ADDR  00F9H  NOT USED
+CKCON. . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKCON0 . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKRL . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+CKSEL. . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+CL . . . . . . . . . . . . . . . . .  D  ADDR  00E9H  NOT USED
+CLKREG . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CMOD . . . . . . . . . . . . . . . .  D  ADDR  00D9H  NOT USED
+CPRL2. . . . . . . . . . . . . . . .  B  ADDR  00C8H  NOT USED
+CR . . . . . . . . . . . . . . . . .  B  ADDR  00DEH  NOT USED
+CT2. . . . . . . . . . . . . . . . .  B  ADDR  00C9H  NOT USED
+CY . . . . . . . . . . . . . . . . .  B  ADDR  00D7H  NOT USED
+DP0H . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DP0L . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+DP1H . . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+DP1L . . . . . . . . . . . . . . . .  D  ADDR  0084H  NOT USED
+DPH. . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DPL. . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+EA . . . . . . . . . . . . . . . . .  B  ADDR  00AFH  NOT USED
+EC . . . . . . . . . . . . . . . . .  B  ADDR  00AEH  NOT USED
+EECON. . . . . . . . . . . . . . . .  D  ADDR  0096H  NOT USED
+ENDTAG . . . . . . . . . . . . . . .  C  ADDR  00D8H
+ES . . . . . . . . . . . . . . . . .  B  ADDR  00ACH  NOT USED
+ET0. . . . . . . . . . . . . . . . .  B  ADDR  00A9H  NOT USED
+ET1. . . . . . . . . . . . . . . . .  B  ADDR  00ABH  NOT USED
+ET2. . . . . . . . . . . . . . . . .  B  ADDR  00ADH  NOT USED
+EX0. . . . . . . . . . . . . . . . .  B  ADDR  00A8H  NOT USED
+EX1. . . . . . . . . . . . . . . . .  B  ADDR  00AAH  NOT USED
+EXEN2. . . . . . . . . . . . . . . .  B  ADDR  00CBH  NOT USED
+EXF2 . . . . . . . . . . . . . . . .  B  ADDR  00CEH  NOT USED
+EXTI0. . . . . . . . . . . . . . . .  C  ADDR  0003H  NOT USED
+EXTI1. . . . . . . . . . . . . . . .  C  ADDR  0013H  NOT USED
+F0 . . . . . . . . . . . . . . . . .  B  ADDR  00D5H  NOT USED
+FE . . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+IE . . . . . . . . . . . . . . . . .  D  ADDR  00A8H  NOT USED
+IE0. . . . . . . . . . . . . . . . .  B  ADDR  0089H  NOT USED
+IE1. . . . . . . . . . . . . . . . .  B  ADDR  008BH  NOT USED
+INT0 . . . . . . . . . . . . . . . .  B  ADDR  00B2H  NOT USED
+INT1 . . . . . . . . . . . . . . . .  B  ADDR  00B3H  NOT USED
+IP . . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPH. . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH0 . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH1 . . . . . . . . . . . . . . . .  D  ADDR  00B3H  NOT USED
+IPL0 . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPL1 . . . . . . . . . . . . . . . .  D  ADDR  00B2H  NOT USED
+IT0. . . . . . . . . . . . . . . . .  B  ADDR  0088H  NOT USED
+IT1. . . . . . . . . . . . . . . . .  B  ADDR  008AH  NOT USED
+KBE. . . . . . . . . . . . . . . . .  D  ADDR  009DH  NOT USED
+KBF. . . . . . . . . . . . . . . . .  D  ADDR  009EH  NOT USED
+KBLS . . . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+LABEL1 . . . . . . . . . . . . . . .  C  ADDR  0095H
+LOL. . . . . . . . . . . . . . . . .  C  ADDR  00D7H
+NEXT1. . . . . . . . . . . . . . . .  C  ADDR  009BH
+OSCCON . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+OV . . . . . . . . . . . . . . . . .  B  ADDR  00D2H  NOT USED
+P. . . . . . . . . . . . . . . . . .  B  ADDR  00D0H  NOT USED
+P0 . . . . . . . . . . . . . . . . .  D  ADDR  0080H  NOT USED
+P1 . . . . . . . . . . . . . . . . .  D  ADDR  0090H  NOT USED
+P1M1 . . . . . . . . . . . . . . . .  D  ADDR  00D4H  NOT USED
+P1M2 . . . . . . . . . . . . . . . .  D  ADDR  00E2H  NOT USED
+P2 . . . . . . . . . . . . . . . . .  D  ADDR  00A0H  NOT USED
+P3 . . . . . . . . . . . . . . . . .  D  ADDR  00B0H  NOT USED
+P3M1 . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+P3M2 . . . . . . . . . . . . . . . .  D  ADDR  00E3H  NOT USED
+P4 . . . . . . . . . . . . . . . . .  D  ADDR  00C0H  NOT USED
+P4M1 . . . . . . . . . . . . . . . .  D  ADDR  00D6H  NOT USED
+P4M2 . . . . . . . . . . . . . . . .  D  ADDR  00E4H  NOT USED
+P5 . . . . . . . . . . . . . . . . .  D  ADDR  00E8H  NOT USED
+PC . . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PCON . . . . . . . . . . . . . . . .  D  ADDR  0087H  NOT USED
+PPCL . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PS . . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSL. . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSW. . . . . . . . . . . . . . . . .  D  ADDR  00D0H  NOT USED
+PT0. . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT0L . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT1. . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT1L . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT2. . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PT2L . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PX0. . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX0L . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX1. . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+PX1L . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+RB8. . . . . . . . . . . . . . . . .  B  ADDR  009AH  NOT USED
+RCAP2H . . . . . . . . . . . . . . .  D  ADDR  00CBH  NOT USED
+RCAP2L . . . . . . . . . . . . . . .  D  ADDR  00CAH  NOT USED
+RCLK . . . . . . . . . . . . . . . .  B  ADDR  00CDH  NOT USED
+RD . . . . . . . . . . . . . . . . .  B  ADDR  00B7H  NOT USED
+REF0 . . . . . . . . . . . . . . . .  C  ADDR  00D1H
+REG0 . . . . . . . . . . . . . . . .  C  ADDR  00BDH
+REG1 . . . . . . . . . . . . . . . .  C  ADDR  00C9H
+RELATIV1 . . . . . . . . . . . . . .  C  ADDR  0098H
+REN. . . . . . . . . . . . . . . . .  B  ADDR  009CH  NOT USED
+RESET. . . . . . . . . . . . . . . .  C  ADDR  0000H  NOT USED
+RI . . . . . . . . . . . . . . . . .  B  ADDR  0098H  NOT USED
+RS0. . . . . . . . . . . . . . . . .  B  ADDR  00D3H  NOT USED
+RS1. . . . . . . . . . . . . . . . .  B  ADDR  00D4H  NOT USED
+RXD. . . . . . . . . . . . . . . . .  B  ADDR  00B0H  NOT USED
+SADDR. . . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_0. . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_1. . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SADEN. . . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_0. . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_1. . . . . . . . . . . . . . .  D  ADDR  00BAH  NOT USED
+SBUF . . . . . . . . . . . . . . . .  D  ADDR  0099H  NOT USED
+SCON . . . . . . . . . . . . . . . .  D  ADDR  0098H  NOT USED
+SINT . . . . . . . . . . . . . . . .  C  ADDR  0023H  NOT USED
+SM0. . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+SM1. . . . . . . . . . . . . . . . .  B  ADDR  009EH  NOT USED
+SM2. . . . . . . . . . . . . . . . .  B  ADDR  009DH  NOT USED
+SP . . . . . . . . . . . . . . . . .  D  ADDR  0081H  NOT USED
+SPCON. . . . . . . . . . . . . . . .  D  ADDR  00C3H  NOT USED
+SPCR . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+SPDAT. . . . . . . . . . . . . . . .  D  ADDR  00C5H  NOT USED
+SPDR . . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+SPSR . . . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SPSTA. . . . . . . . . . . . . . . .  D  ADDR  00C4H  NOT USED
+T0 . . . . . . . . . . . . . . . . .  B  ADDR  00B4H  NOT USED
+T1 . . . . . . . . . . . . . . . . .  B  ADDR  00B5H  NOT USED
+T2CON. . . . . . . . . . . . . . . .  D  ADDR  00C8H  NOT USED
+T2MOD. . . . . . . . . . . . . . . .  D  ADDR  00C9H  NOT USED
+TB8. . . . . . . . . . . . . . . . .  B  ADDR  009BH  NOT USED
+TCLK . . . . . . . . . . . . . . . .  B  ADDR  00CCH  NOT USED
+TCON . . . . . . . . . . . . . . . .  D  ADDR  0088H  NOT USED
+TF0. . . . . . . . . . . . . . . . .  B  ADDR  008DH  NOT USED
+TF1. . . . . . . . . . . . . . . . .  B  ADDR  008FH  NOT USED
+TF2. . . . . . . . . . . . . . . . .  B  ADDR  00CFH  NOT USED
+TH0. . . . . . . . . . . . . . . . .  D  ADDR  008CH  NOT USED
+TH1. . . . . . . . . . . . . . . . .  D  ADDR  008DH  NOT USED
+TH2. . . . . . . . . . . . . . . . .  D  ADDR  00CDH  NOT USED
+TI . . . . . . . . . . . . . . . . .  B  ADDR  0099H  NOT USED
+TIMER0 . . . . . . . . . . . . . . .  C  ADDR  000BH  NOT USED
+TIMER1 . . . . . . . . . . . . . . .  C  ADDR  001BH  NOT USED
+TIMER2 . . . . . . . . . . . . . . .  C  ADDR  002BH  NOT USED
+TL0. . . . . . . . . . . . . . . . .  D  ADDR  008AH  NOT USED
+TL1. . . . . . . . . . . . . . . . .  D  ADDR  008BH  NOT USED
+TL2. . . . . . . . . . . . . . . . .  D  ADDR  00CCH  NOT USED
+TMOD . . . . . . . . . . . . . . . .  D  ADDR  0089H  NOT USED
+TR0. . . . . . . . . . . . . . . . .  B  ADDR  008CH  NOT USED
+TR1. . . . . . . . . . . . . . . . .  B  ADDR  008EH  NOT USED
+TR2. . . . . . . . . . . . . . . . .  B  ADDR  00CAH  NOT USED
+TXD. . . . . . . . . . . . . . . . .  B  ADDR  00B1H  NOT USED
+WDTCON . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTPRG . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTRST . . . . . . . . . . . . . . .  D  ADDR  00A6H  NOT USED
+WR . . . . . . . . . . . . . . . . .  B  ADDR  00B6H  NOT USED

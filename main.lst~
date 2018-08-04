@@ -1,0 +1,695 @@
+main                                                                                                                    PAGE 1
+                         1     ;Anzeigetafel
+                         2     ;Minuten und Sekunden anzeige für ein Fußballspiel (Port0)
+                         3     ;Punkte Anzeige für jedes Team  (Port1)
+                         4     ;
+                         5     ;7Seg  ultiplexed über Port2:
+                         6     ; Pin 0-1 für Sekunden
+                         7     ; Pin 2-3 für Minuten
+                         8     ; Pin 4-5 für rechtes Team
+                         9     ; Pun 6-7 für linkes Team
+                        10     ;
+                        11     ;Funktionstasten (Port3; Pinbelegung wie aufgelistet):
+                        12     ;Start Timer, Pause Timer, (opt. Reset Timer,) Punkte Links++, Punkte Rechts++, Punkte Links--, Punkt
+                        13     ;Optional eine Hupe für ein erziehltes Tor
+                        14
+                        15
+  0069                  16     Count2 Equ 69h  ;Counter 2  bis 195
+  0068                  17     Count1 Equ 68h  ;Counter 1  bis 250
+                        18
+  0067                  19     MH Equ 67h
+  0066                  20     ML Equ 66h      ;Minuten
+  0065                  21     SH Equ 65h
+  0064                  22     SL Equ 64h      ;Sekunden
+                        23
+  0063                  24     PLH Equ 63h
+  0062                  25     PLL Equ 62h     ;Punkte Links
+  0061                  26     PRH Equ 61h
+  0060                  27     PRL Equ 60h     ;Punkt Rechts
+                        28
+                        29     ; Knöpfe
+  00B0                  30     StartT Equ P3.0
+  00B1                  31     PauseT Equ P3.1
+  00B2                  32     PunkteLP Equ P3.2
+  00B3                  33     PunkteRP Equ P3.3
+  00B4                  34     PunkteLM Equ P3.4
+  00B5                  35     PunkteRM Equ P3.5
+  00B6                  36     ResetGame Equ P3.6
+                        37
+  0078                  38     sStartT Equ 2Fh.0
+  0079                  39     sPauseT Equ 2Fh.1
+  007A                  40     sPunkteLP Equ 2Fh.2
+  007B                  41     sPunkteRP Equ 2Fh.3
+  007C                  42     sPunkteLM Equ 2Fh.4
+  007D                  43     sPunkteRM Equ 2Fh.5
+  007E                  44     sResetGame Equ 2Fh.6
+                        45
+                        46
+                        47
+                        48     org 0h
+0000 020030             49     ljmp init
+                        50
+                        51
+                        52
+                        53
+                        54     ;########################################
+                        55     ;       Timer 0 Interrupt
+                        56     ;----------------------------------------
+                        57     org 0Bh ;Timer 0 Interrupt
+000B 0201C5             58     ljmp timerrutine
+                        59
+                        60
+                        61
+                        62
+                        63
+                        64
+                        65
+                        66     ;########################################
+                        67     ;       INIT
+                        68     ;----------------------------------------
+                        69     org 30h         ;interrupts überspringen
+                        70     init:
+                        71     ;mov SP, #30h
+                        72
+0030 756300             73     mov PLH, #00d
+0033 756200             74     mov PLL, #00d
+0036 756100             75     mov PRH, #00d
+0039 756000             76     mov PRL, #00d
+                        77
+003C 756700             78     mov MH, #00d
+003F 756600             79     mov ML, #00d
+0042 756500             80     mov SH, #00d
+0045 756400             81     mov SL, #00d
+                        82
+0048 756800             83     mov COUNT1, #00d
+004B 756900             84     mov count2, #00d
+                        85
+004E D2AF               86     setb EA         ;Enable all Interrupts
+0050 D2A9               87     setb ET0        ;Enable Timer Interrupt
+0052 758902             88     mov TMOD, #00000010b    ;Enable 8 bit mod
+                        89
+0055 758A07             90     mov TL0, #07d   ;Laden des Timers mit 0 -> 250 Ticks bis überlauf -> 48000 rounds for 1sec
+                        91     ;250 * 250 * 192 = 1sec
+0058 758C07             92     mov TH0, #07d
+                        93
+                        94
+                        95
+                        96
+                        97
+005B 02005E             98     ljmp main
+                        99     ;########################################
+                       100
+                       101
+                       102
+                       103
+                       104
+                       105     ;########################################
+                       106     ;       Main loop
+                       107     ;----------------------------------------
+                       108     main:
+005E 120182            109     call zeigeAlleSemente
+                       110
+                       111     ;Check button press
+0061 20B002            112     JB StartT, noStartT
+0064 D278              113     setb sStartT
+                       114     noStartT:
+0066 20B102            115     JB PauseT, noPauseT
+0069 D279              116     setb sPauseT
+                       117     noPauseT:
+006B 20B202            118     JB PunkteLP, noPunkteLP
+006E D27A              119     setb sPunkteLP
+                       120     noPunkteLP:
+0070 20B302            121     JB PunkteRP, noPunkteRP
+0073 D27B              122     setb sPunkteRP
+                       123     noPunkteRP:
+0075 20B402            124     JB PunkteLM, noPunkteLM
+0078 D27C              125     setb sPunkteLM
+                       126     noPunkteLM:
+007A 20B502            127     JB PunkteRM, noPunkteRM
+007D D27D              128     setb sPunkteRM
+                       129     noPunkteRM:
+007F 20B602            130     JB ResetGame, noResetGame
+0082 D27E              131     setb sResetGame
+                       132     noResetGame:
+                       133
+                       134
+                       135
+                       136
+                       137
+0084 00                138     nop
+                       139
+                       140
+                       141     ;checkbuttonPressed
+0085 307807            142     JNB sStartT, notStartT
+0088 30B004            143     JNB StartT, notStartT
+                       144     ;StartT pressed
+                       145
+008B D28C              146     setb TR0        ;start timer
+                       147
+008D C278              148     clr sStartT
+                       149     notStartT:
+                       150
+008F 307907            151     JNB sPauseT, notPauseT
+0092 30B104            152     JNB PauseT, notPauseT
+                       153     ;PauseT pressed
+                       154
+0095 C28C              155     clr TR0 ;stop timer
+                       156
+0097 C279              157     clr sPauseT
+                       158     notPauseT:
+                       159
+0099 307A0C            160     JNB sPunkteLP, notPunkteLP
+009C 30B209            161     JNB PunkteLP, notPunkteLP
+                       162     ;PunkteLP pressed
+                       163
+009F 7862              164     mov R0, #062h           ;Links
+00A1 7900              165     mov R1, #00d
+00A3 120106            166     call countupPunkte
+                       167
+                       168
+00A6 C27A              169     clr sPunkteLP
+                       170     notPunkteLP:
+                       171
+00A8 307B0C            172     JNB sPunkteRP, notPunkteRP
+00AB 30B309            173     JNB PunkteRP, notPunkteRP
+                       174     ;PunkteRP pressed
+                       175
+00AE 7860              176     mov R0, #060h           ;Recht
+00B0 7900              177     mov R1, #00d
+00B2 120106            178     call countupPunkte
+                       179
+00B5 C27B              180     clr sPunkteRP
+                       181     notPunkteRP:
+                       182
+00B7 307C0C            183     JNB sPunkteLM, notPunkteLM
+00BA 30B409            184     JNB PunkteLM, notPunkteLM
+                       185     ;PunkteLM pressed
+                       186
+00BD 7862              187     mov R0, #062h           ;Links
+00BF 7901              188     mov R1, #01d
+00C1 120106            189     call countupPunkte
+                       190
+00C4 C27C              191     clr sPunkteLM
+                       192     notPunkteLM:
+                       193
+00C6 307D0C            194     JNB sPunkteRM, notPunkteRM
+00C9 30B509            195     JNB PunkteRM, notPunkteRM
+                       196     ;PunkteRM pressed
+                       197
+00CC 7860              198     mov R0, #060h           ;Recht
+00CE 7901              199     mov R1, #01d
+00D0 120106            200     call countupPunkte
+                       201
+00D3 C27D              202     clr sPunkteRM
+                       203     notPunkteRM:
+                       204
+00D5 307E2B            205     JNB sResetGame, notResetGame
+00D8 30B628            206     JNB ResetGame, notResetGame
+                       207     ;ResetGame pressed
+                       208
+00DB 756300            209     mov PLH, #00d
+00DE 756200            210     mov PLL, #00d
+00E1 756100            211     mov PRH, #00d
+00E4 756000            212     mov PRL, #00d
+                       213
+00E7 756700            214     mov MH, #00d
+00EA 756600            215     mov ML, #00d
+00ED 756500            216     mov SH, #00d
+00F0 756400            217     mov SL, #00d
+                       218
+00F3 C28C              219     clr TR0 ;stop timer
+                       220
+00F5 758A07            221     mov TL0, #07d
+00F8 758C07            222     mov TH0, #07d
+00FB 756800            223     mov COUNT1, #00d
+00FE 756900            224     mov count2, #00d
+                       225
+                       226
+0101 C27E              227     clr sResetGame
+                       228     notResetGame:
+                       229
+0103 02005E            230     ljmp main
+                       231     ;########################################
+                       232
+                       233
+                       234
+                       235
+                       236
+                       237     ;########################################
+                       238     ;       Count Up Punkte
+                       239     ;       Zähle Punkte um 1 hoch oder 1 runter
+                       240     ;       R0 steht für Pointer zu PRL oder PLL
+                       241     ;       R1 steht für: 0 = hoch ; 1 = runter
+                       242     ;----------------------------------------
+                       243     countupPunkte:
+0106 C000              244     push 00h
+0108 C001              245     push 01h
+010A B90013            246     cjne R1, #00d, runtercount
+                       247     ;Count Hoch
+010D 06                248     INC @R0
+010E B60A1F            249     cjne @R0, #010d, fertigcountPunkte
+0111 7600              250     mov @R0, #00d
+0113 08                251     INC R0
+0114 06                252     INC @R0
+0115 B60A18            253     cjne @R0, #10d, fertigcountPunkte
+0118 7600              254     mov @R0, #00d
+011A 18                255     DEC R0
+011B 7600              256     mov @R0, #00d
+011D 020130            257     ljmp fertigcountPunkte
+                       258
+                       259
+                       260     runtercount:
+                       261     ;Count Runter
+0120 16                262     DEC @R0
+0121 B6FF0C            263     cjne @R0, #0FFh, fertigcountPunkte
+0124 7609              264     mov @R0, #09d
+0126 08                265     INC R0
+0127 16                266     DEC @R0
+0128 B6FF05            267     cjne @R0, #0FFh, fertigcountPunkte
+012B 7609              268     mov @R0, #09d
+012D 18                269     DEC R0
+012E 7609              270     mov @R0, #09d
+                       271
+                       272
+                       273     fertigcountPunkte:
+0130 D001              274     pop 01h
+0132 D000              275     pop 00h
+0134 22                276     ret
+                       277
+                       278     ;########################################
+                       279
+                       280
+                       281
+                       282
+                       283
+                       284
+                       285
+                       286     ;########################################
+                       287     ;       Count Up Time
+                       288     ;       Zähle Zeit um 1 hoch
+                       289     ;----------------------------------------
+                       290     countup:
+                       291     ;Prüfe ob 60Min. bereits errecht ist
+0135 E567              292     mov A, MH
+0137 B40612            293     cjne A, #06d, notfertig
+013A E566              294     mov A, ML
+013C B4000D            295     cjne A, #00d, notfertig
+013F E565              296     mov A, SH
+0141 B40008            297     cjne A, #00d, notfertig
+0144 E564              298     mov A, SL
+0146 B40003            299     cjne A, #00d, notfertig
+0149 020181            300     ljmp fertigcount                        ;60min bereits erreicht
+                       301     notfertig:                      ;60min nicht erreicht
+                       302     ;Sekunden Low ++
+014C E564              303     mov A, SL
+014E 04                304     INC A
+014F B40A1B            305     cjne A, #010d, fertigSL
+0152 756400            306     mov SL, #00d
+0155 E565              307     mov A, SH
+0157 04                308     INC A
+0158 B40617            309     cjne A, #06d, fertigSH
+015B 756500            310     mov SH, #00d
+015E E566              311     mov A, ML
+0160 04                312     INC A
+0161 B40A13            313     cjne A, #10d, fertigML
+0164 756600            314     mov ML, #00d
+0167 E567              315     mov A, MH
+0169 04                316     INC A
+016A 02017C            317     ljmp fertigMH
+                       318
+                       319     fertigSL:
+016D F564              320     mov SL, A
+016F 020181            321     ljmp fertigcount
+                       322     fertigSH:
+0172 F565              323     mov SH, A
+0174 020181            324     ljmp fertigcount
+                       325     fertigML:
+0177 F566              326     mov ML, A
+0179 020181            327     ljmp fertigcount
+                       328     fertigMH:
+017C F567              329     mov MH, A
+017E 020181            330     ljmp fertigcount
+                       331     fertigcount:
+0181 22                332     ret
+                       333
+                       334     ;########################################
+                       335
+                       336
+                       337
+                       338
+                       339     ;########################################
+                       340     ;       Anzeigen Loop
+                       341     ;       Alle 7Sementanzeigen werden mit ihren Werten beladen
+                       342     ;----------------------------------------
+                       343     zeigeAlleSemente:
+0182 C000              344     push 00h        ;Sichere R0
+0184 C001              345     push 01h        ;Sichere R1
+0186 C002              346     push 02h        ;Sichere R2
+0188 7800              347     mov R0, #00d    ;aktuelles segment
+018A 7900              348     mov R1, #00d    ;Pointer für wert von segment
+                       349
+018C 7401              350     mov A, #01d
+018E F4                351     cpl A
+018F FA                352     mov R2, A       ;selectiertes segment... wird rotiert
+                       353
+                       354     ;clear all 7segs
+0190 75A000            355     mov P2, #00h
+0193 7580FF            356     mov P0, #0FFh
+0196 7590FF            357     mov P1, #0FFh
+0199 75A0FF            358     mov P2, #0FFh
+                       359
+                       360     loopAlleSegmente:
+019C B80807            361     CJNE R0, #08d, doFuerSegment     ;für alle 8 segmente
+019F D002              362     pop 02h         ;Wiederherstellen von R2
+01A1 D001              363     pop 01h         ;Wiederherstellen von R1
+01A3 D000              364     pop 00h         ;Wiederherstellen von R0
+01A5 22                365     ret
+                       366
+                       367     doFuerSegment:
+                       368     ;       Lade Segment mit entsprechendem Wert
+01A6 8AA0              369     mov p2, R2      ;aktivate segment mit P2
+                       370
+                       371
+                       372
+01A8 E8                373     mov A, R0       ;get wert für
+                       374     ;60h start adresse für die Sement werte s.o.
+01A9 2460              375     Add A, #060h    ;aktuelles Segment?
+01AB F9                376     mov R1, A
+01AC E7                377     mov A, @R1
+                       378
+01AD 900400            379     mov dptr, #numbers      ;hole richtigs 7Seg code
+01B0 93                380     movc a,@a+dptr
+01B1 F580              381     mov p0, a       ;gib 7seg code auf P0 aus
+01B3 F590              382     mov p1, a       ;gib 7seg code auf P1 aus
+                       383
+01B5 75A0FF            384     mov p2, #0FFh   ;deaktivte 7Seg
+01B8 7590FF            385     mov p1, #0FFh   ;deaktivte 7Seg
+01BB 7580FF            386     mov p0, #0FFh   ;deaktivte 7Seg
+                       387
+                       388
+                       389     ; Select nächstes Segment
+01BE EA                390     mov A, R2
+01BF 23                391     RL A
+01C0 FA                392     mov R2, A
+                       393
+                       394     ;continue loop
+01C1 08                395     Inc R0
+                       396
+01C2 02019C            397     ljmp loopAlleSegmente
+                       398     ;########################################
+                       399
+                       400
+                       401
+                       402
+                       403
+                       404
+                       405     ;########################################
+                       406     ;       Timer 0 Interrupt Rutine
+                       407     ;----------------------------------------
+                       408
+                       409      timerrutine:
+                       410
+                       411     ;timer * count1 * count2
+                       412     ;250 * 250 * 192 = 1sec
+                       413
+                       414
+                       415     ;1ms = 12000 ticks
+                       416     ;250 * 48 = 1ms
+01C5 0568              417     INC count1
+01C7 E568              418     mov A, count1
+                       419     ;cjne A, #250d, fertigtimer
+                       420     ;cjne A, #48d, fertigtimer
+01C9 B40205            421     cjne A, #02d, fertigtimer       ;fake ms for fake simulator
+                       422
+01CC 756800            423     mov count1, #00d
+                       424
+                       425     ;INC count2
+                       426     ;mov A, count2
+                       427     ;cjne A, #192d, fertigcount
+                       428
+                       429     ;mov count2, #00d
+                       430
+                       431
+01CF 3135              432     call countup
+                       433
+                       434
+                       435     fertigtimer:
+                       436
+01D1 32                437      reti
+                       438
+                       439
+                       440
+                       441
+                       442
+                       443
+                       444     ;########################################
+                       445     ;       DATA
+                       446     ;----------------------------------------
+                       447     org 400h
+                       448     numbers:
+0400 C0                449     db 11000000b
+0401 F9A4B0            450     db 11111001b, 10100100b, 10110000b
+0404 999282            451     db 10011001b, 10010010b, 10000010b
+0407 F88090            452     db 11111000b, 10000000b, 10010000b
+                       453
+                       454     end
+ASSEMBLY COMPLETE, NO ERRORS FOUND, NO WARNINGS
+
+
+SYMBOL TABLE:
+??MCU_8051_IDE . . . . . . . . . . .  N  NUMB  8051H  NOT USED
+??VERSION. . . . . . . . . . . . . .  N  NUMB  0149H  NOT USED
+AC . . . . . . . . . . . . . . . . .  B  ADDR  00D6H  NOT USED
+ACC. . . . . . . . . . . . . . . . .  D  ADDR  00E0H  NOT USED
+ACSR . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+ADCF . . . . . . . . . . . . . . . .  D  ADDR  00F6H  NOT USED
+ADCLK. . . . . . . . . . . . . . . .  D  ADDR  00F2H  NOT USED
+ADCON. . . . . . . . . . . . . . . .  D  ADDR  00F3H  NOT USED
+ADDH . . . . . . . . . . . . . . . .  D  ADDR  00F5H  NOT USED
+ADDL . . . . . . . . . . . . . . . .  D  ADDR  00F4H  NOT USED
+AUXR . . . . . . . . . . . . . . . .  D  ADDR  008EH  NOT USED
+AUXR1. . . . . . . . . . . . . . . .  D  ADDR  00A2H  NOT USED
+B. . . . . . . . . . . . . . . . . .  D  ADDR  00F0H  NOT USED
+BDRCON . . . . . . . . . . . . . . .  D  ADDR  009BH  NOT USED
+BDRCON_1 . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+BRL. . . . . . . . . . . . . . . . .  D  ADDR  009AH  NOT USED
+CCAP0H . . . . . . . . . . . . . . .  D  ADDR  00FAH  NOT USED
+CCAP0L . . . . . . . . . . . . . . .  D  ADDR  00EAH  NOT USED
+CCAP1H . . . . . . . . . . . . . . .  D  ADDR  00FBH  NOT USED
+CCAP1L . . . . . . . . . . . . . . .  D  ADDR  00EBH  NOT USED
+CCAP2H . . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAP3H . . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAP4H . . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL2H. . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAPL2L. . . . . . . . . . . . . . .  D  ADDR  00ECH  NOT USED
+CCAPL3H. . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAPL3L. . . . . . . . . . . . . . .  D  ADDR  00EDH  NOT USED
+CCAPL4H. . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL4L. . . . . . . . . . . . . . .  D  ADDR  00EEH  NOT USED
+CCAPM0 . . . . . . . . . . . . . . .  D  ADDR  00DAH  NOT USED
+CCAPM1 . . . . . . . . . . . . . . .  D  ADDR  00DBH  NOT USED
+CCAPM2 . . . . . . . . . . . . . . .  D  ADDR  00DCH  NOT USED
+CCAPM3 . . . . . . . . . . . . . . .  D  ADDR  00DDH  NOT USED
+CCAPM4 . . . . . . . . . . . . . . .  D  ADDR  00DEH  NOT USED
+CCF0 . . . . . . . . . . . . . . . .  B  ADDR  00D8H  NOT USED
+CCF1 . . . . . . . . . . . . . . . .  B  ADDR  00D9H  NOT USED
+CCF2 . . . . . . . . . . . . . . . .  B  ADDR  00DAH  NOT USED
+CCF3 . . . . . . . . . . . . . . . .  B  ADDR  00DBH  NOT USED
+CCF4 . . . . . . . . . . . . . . . .  B  ADDR  00DCH  NOT USED
+CCON . . . . . . . . . . . . . . . .  D  ADDR  00D8H  NOT USED
+CFINT. . . . . . . . . . . . . . . .  C  ADDR  0033H  NOT USED
+CH . . . . . . . . . . . . . . . . .  D  ADDR  00F9H  NOT USED
+CKCON. . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKCON0 . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKRL . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+CKSEL. . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+CL . . . . . . . . . . . . . . . . .  D  ADDR  00E9H  NOT USED
+CLKREG . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CMOD . . . . . . . . . . . . . . . .  D  ADDR  00D9H  NOT USED
+COUNT1 . . . . . . . . . . . . . . .  N  NUMB  0068H
+COUNT2 . . . . . . . . . . . . . . .  N  NUMB  0069H
+COUNTUP. . . . . . . . . . . . . . .  C  ADDR  0135H
+COUNTUPPUNKTE. . . . . . . . . . . .  C  ADDR  0106H
+CPRL2. . . . . . . . . . . . . . . .  B  ADDR  00C8H  NOT USED
+CR . . . . . . . . . . . . . . . . .  B  ADDR  00DEH  NOT USED
+CT2. . . . . . . . . . . . . . . . .  B  ADDR  00C9H  NOT USED
+CY . . . . . . . . . . . . . . . . .  B  ADDR  00D7H  NOT USED
+DOFUERSEGMENT. . . . . . . . . . . .  C  ADDR  01A6H
+DP0H . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DP0L . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+DP1H . . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+DP1L . . . . . . . . . . . . . . . .  D  ADDR  0084H  NOT USED
+DPH. . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DPL. . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+EA . . . . . . . . . . . . . . . . .  B  ADDR  00AFH
+EC . . . . . . . . . . . . . . . . .  B  ADDR  00AEH  NOT USED
+EECON. . . . . . . . . . . . . . . .  D  ADDR  0096H  NOT USED
+ES . . . . . . . . . . . . . . . . .  B  ADDR  00ACH  NOT USED
+ET0. . . . . . . . . . . . . . . . .  B  ADDR  00A9H
+ET1. . . . . . . . . . . . . . . . .  B  ADDR  00ABH  NOT USED
+ET2. . . . . . . . . . . . . . . . .  B  ADDR  00ADH  NOT USED
+EX0. . . . . . . . . . . . . . . . .  B  ADDR  00A8H  NOT USED
+EX1. . . . . . . . . . . . . . . . .  B  ADDR  00AAH  NOT USED
+EXEN2. . . . . . . . . . . . . . . .  B  ADDR  00CBH  NOT USED
+EXF2 . . . . . . . . . . . . . . . .  B  ADDR  00CEH  NOT USED
+EXTI0. . . . . . . . . . . . . . . .  C  ADDR  0003H  NOT USED
+EXTI1. . . . . . . . . . . . . . . .  C  ADDR  0013H  NOT USED
+F0 . . . . . . . . . . . . . . . . .  B  ADDR  00D5H  NOT USED
+FE . . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+FERTIGCOUNT. . . . . . . . . . . . .  C  ADDR  0181H
+FERTIGCOUNTPUNKTE. . . . . . . . . .  C  ADDR  0130H
+FERTIGMH . . . . . . . . . . . . . .  C  ADDR  017CH
+FERTIGML . . . . . . . . . . . . . .  C  ADDR  0177H
+FERTIGSH . . . . . . . . . . . . . .  C  ADDR  0172H
+FERTIGSL . . . . . . . . . . . . . .  C  ADDR  016DH
+FERTIGTIMER. . . . . . . . . . . . .  C  ADDR  01D1H
+IE . . . . . . . . . . . . . . . . .  D  ADDR  00A8H  NOT USED
+IE0. . . . . . . . . . . . . . . . .  B  ADDR  0089H  NOT USED
+IE1. . . . . . . . . . . . . . . . .  B  ADDR  008BH  NOT USED
+INIT . . . . . . . . . . . . . . . .  C  ADDR  0030H
+INT0 . . . . . . . . . . . . . . . .  B  ADDR  00B2H  NOT USED
+INT1 . . . . . . . . . . . . . . . .  B  ADDR  00B3H  NOT USED
+IP . . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPH. . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH0 . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH1 . . . . . . . . . . . . . . . .  D  ADDR  00B3H  NOT USED
+IPL0 . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPL1 . . . . . . . . . . . . . . . .  D  ADDR  00B2H  NOT USED
+IT0. . . . . . . . . . . . . . . . .  B  ADDR  0088H  NOT USED
+IT1. . . . . . . . . . . . . . . . .  B  ADDR  008AH  NOT USED
+KBE. . . . . . . . . . . . . . . . .  D  ADDR  009DH  NOT USED
+KBF. . . . . . . . . . . . . . . . .  D  ADDR  009EH  NOT USED
+KBLS . . . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+LOOPALLESEGMENTE . . . . . . . . . .  C  ADDR  019CH
+MAIN . . . . . . . . . . . . . . . .  C  ADDR  005EH
+MH . . . . . . . . . . . . . . . . .  N  NUMB  0067H
+ML . . . . . . . . . . . . . . . . .  N  NUMB  0066H
+NOPAUSET . . . . . . . . . . . . . .  C  ADDR  006BH
+NOPUNKTELM . . . . . . . . . . . . .  C  ADDR  007AH
+NOPUNKTELP . . . . . . . . . . . . .  C  ADDR  0070H
+NOPUNKTERM . . . . . . . . . . . . .  C  ADDR  007FH
+NOPUNKTERP . . . . . . . . . . . . .  C  ADDR  0075H
+NORESETGAME. . . . . . . . . . . . .  C  ADDR  0084H
+NOSTARTT . . . . . . . . . . . . . .  C  ADDR  0066H
+NOTFERTIG. . . . . . . . . . . . . .  C  ADDR  014CH
+NOTPAUSET. . . . . . . . . . . . . .  C  ADDR  0099H
+NOTPUNKTELM. . . . . . . . . . . . .  C  ADDR  00C6H
+NOTPUNKTELP. . . . . . . . . . . . .  C  ADDR  00A8H
+NOTPUNKTERM. . . . . . . . . . . . .  C  ADDR  00D5H
+NOTPUNKTERP. . . . . . . . . . . . .  C  ADDR  00B7H
+NOTRESETGAME . . . . . . . . . . . .  C  ADDR  0103H
+NOTSTARTT. . . . . . . . . . . . . .  C  ADDR  008FH
+NUMBERS. . . . . . . . . . . . . . .  C  ADDR  0400H
+OSCCON . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+OV . . . . . . . . . . . . . . . . .  B  ADDR  00D2H  NOT USED
+P. . . . . . . . . . . . . . . . . .  B  ADDR  00D0H  NOT USED
+P0 . . . . . . . . . . . . . . . . .  D  ADDR  0080H
+P1 . . . . . . . . . . . . . . . . .  D  ADDR  0090H
+P1M1 . . . . . . . . . . . . . . . .  D  ADDR  00D4H  NOT USED
+P1M2 . . . . . . . . . . . . . . . .  D  ADDR  00E2H  NOT USED
+P2 . . . . . . . . . . . . . . . . .  D  ADDR  00A0H
+P3 . . . . . . . . . . . . . . . . .  D  ADDR  00B0H  NOT USED
+P3M1 . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+P3M2 . . . . . . . . . . . . . . . .  D  ADDR  00E3H  NOT USED
+P4 . . . . . . . . . . . . . . . . .  D  ADDR  00C0H  NOT USED
+P4M1 . . . . . . . . . . . . . . . .  D  ADDR  00D6H  NOT USED
+P4M2 . . . . . . . . . . . . . . . .  D  ADDR  00E4H  NOT USED
+P5 . . . . . . . . . . . . . . . . .  D  ADDR  00E8H  NOT USED
+PAUSET . . . . . . . . . . . . . . .  N  NUMB  00B1H
+PC . . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PCON . . . . . . . . . . . . . . . .  D  ADDR  0087H  NOT USED
+PLH. . . . . . . . . . . . . . . . .  N  NUMB  0063H
+PLL. . . . . . . . . . . . . . . . .  N  NUMB  0062H
+PPCL . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PRH. . . . . . . . . . . . . . . . .  N  NUMB  0061H
+PRL. . . . . . . . . . . . . . . . .  N  NUMB  0060H
+PS . . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSL. . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSW. . . . . . . . . . . . . . . . .  D  ADDR  00D0H  NOT USED
+PT0. . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT0L . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT1. . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT1L . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT2. . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PT2L . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PUNKTELM . . . . . . . . . . . . . .  N  NUMB  00B4H
+PUNKTELP . . . . . . . . . . . . . .  N  NUMB  00B2H
+PUNKTERM . . . . . . . . . . . . . .  N  NUMB  00B5H
+PUNKTERP . . . . . . . . . . . . . .  N  NUMB  00B3H
+PX0. . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX0L . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX1. . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+PX1L . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+RB8. . . . . . . . . . . . . . . . .  B  ADDR  009AH  NOT USED
+RCAP2H . . . . . . . . . . . . . . .  D  ADDR  00CBH  NOT USED
+RCAP2L . . . . . . . . . . . . . . .  D  ADDR  00CAH  NOT USED
+RCLK . . . . . . . . . . . . . . . .  B  ADDR  00CDH  NOT USED
+RD . . . . . . . . . . . . . . . . .  B  ADDR  00B7H  NOT USED
+REN. . . . . . . . . . . . . . . . .  B  ADDR  009CH  NOT USED
+RESET. . . . . . . . . . . . . . . .  C  ADDR  0000H  NOT USED
+RESETGAME. . . . . . . . . . . . . .  N  NUMB  00B6H
+RI . . . . . . . . . . . . . . . . .  B  ADDR  0098H  NOT USED
+RS0. . . . . . . . . . . . . . . . .  B  ADDR  00D3H  NOT USED
+RS1. . . . . . . . . . . . . . . . .  B  ADDR  00D4H  NOT USED
+RUNTERCOUNT. . . . . . . . . . . . .  C  ADDR  0120H
+RXD. . . . . . . . . . . . . . . . .  B  ADDR  00B0H  NOT USED
+SADDR. . . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_0. . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_1. . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SADEN. . . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_0. . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_1. . . . . . . . . . . . . . .  D  ADDR  00BAH  NOT USED
+SBUF . . . . . . . . . . . . . . . .  D  ADDR  0099H  NOT USED
+SCON . . . . . . . . . . . . . . . .  D  ADDR  0098H  NOT USED
+SH . . . . . . . . . . . . . . . . .  N  NUMB  0065H
+SINT . . . . . . . . . . . . . . . .  C  ADDR  0023H  NOT USED
+SL . . . . . . . . . . . . . . . . .  N  NUMB  0064H
+SM0. . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+SM1. . . . . . . . . . . . . . . . .  B  ADDR  009EH  NOT USED
+SM2. . . . . . . . . . . . . . . . .  B  ADDR  009DH  NOT USED
+SP . . . . . . . . . . . . . . . . .  D  ADDR  0081H  NOT USED
+SPAUSET. . . . . . . . . . . . . . .  N  NUMB  0079H
+SPCON. . . . . . . . . . . . . . . .  D  ADDR  00C3H  NOT USED
+SPCR . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+SPDAT. . . . . . . . . . . . . . . .  D  ADDR  00C5H  NOT USED
+SPDR . . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+SPSR . . . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SPSTA. . . . . . . . . . . . . . . .  D  ADDR  00C4H  NOT USED
+SPUNKTELM. . . . . . . . . . . . . .  N  NUMB  007CH
+SPUNKTELP. . . . . . . . . . . . . .  N  NUMB  007AH
+SPUNKTERM. . . . . . . . . . . . . .  N  NUMB  007DH
+SPUNKTERP. . . . . . . . . . . . . .  N  NUMB  007BH
+SRESETGAME . . . . . . . . . . . . .  N  NUMB  007EH
+SSTARTT. . . . . . . . . . . . . . .  N  NUMB  0078H
+STARTT . . . . . . . . . . . . . . .  N  NUMB  00B0H
+T0 . . . . . . . . . . . . . . . . .  B  ADDR  00B4H  NOT USED
+T1 . . . . . . . . . . . . . . . . .  B  ADDR  00B5H  NOT USED
+T2CON. . . . . . . . . . . . . . . .  D  ADDR  00C8H  NOT USED
+T2MOD. . . . . . . . . . . . . . . .  D  ADDR  00C9H  NOT USED
+TB8. . . . . . . . . . . . . . . . .  B  ADDR  009BH  NOT USED
+TCLK . . . . . . . . . . . . . . . .  B  ADDR  00CCH  NOT USED
+TCON . . . . . . . . . . . . . . . .  D  ADDR  0088H  NOT USED
+TF0. . . . . . . . . . . . . . . . .  B  ADDR  008DH  NOT USED
+TF1. . . . . . . . . . . . . . . . .  B  ADDR  008FH  NOT USED
+TF2. . . . . . . . . . . . . . . . .  B  ADDR  00CFH  NOT USED
+TH0. . . . . . . . . . . . . . . . .  D  ADDR  008CH
+TH1. . . . . . . . . . . . . . . . .  D  ADDR  008DH  NOT USED
+TH2. . . . . . . . . . . . . . . . .  D  ADDR  00CDH  NOT USED
+TI . . . . . . . . . . . . . . . . .  B  ADDR  0099H  NOT USED
+TIMER0 . . . . . . . . . . . . . . .  C  ADDR  000BH  NOT USED
+TIMER1 . . . . . . . . . . . . . . .  C  ADDR  001BH  NOT USED
+TIMER2 . . . . . . . . . . . . . . .  C  ADDR  002BH  NOT USED
+TIMERRUTINE. . . . . . . . . . . . .  C  ADDR  01C5H
+TL0. . . . . . . . . . . . . . . . .  D  ADDR  008AH
+TL1. . . . . . . . . . . . . . . . .  D  ADDR  008BH  NOT USED
+TL2. . . . . . . . . . . . . . . . .  D  ADDR  00CCH  NOT USED
+TMOD . . . . . . . . . . . . . . . .  D  ADDR  0089H
+TR0. . . . . . . . . . . . . . . . .  B  ADDR  008CH
+TR1. . . . . . . . . . . . . . . . .  B  ADDR  008EH  NOT USED
+TR2. . . . . . . . . . . . . . . . .  B  ADDR  00CAH  NOT USED
+TXD. . . . . . . . . . . . . . . . .  B  ADDR  00B1H  NOT USED
+WDTCON . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTPRG . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTRST . . . . . . . . . . . . . . .  D  ADDR  00A6H  NOT USED
+WR . . . . . . . . . . . . . . . . .  B  ADDR  00B6H  NOT USED
+ZEIGEALLESEMENTE . . . . . . . . . .  C  ADDR  0182H

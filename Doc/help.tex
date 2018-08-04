@@ -1,0 +1,806 @@
+\chapter{Konzept} 	% engl. Preface
+
+
+
+
+\noindent
+Diese Projektarbeit habe ich während meiner dritten Praxisphase geschrieben.
+
+ 
+
+
+%%%
+%Auf die Entstehung des Dikumentes eingehen; Danksagungen; Widmungen und phylisophische Anmerkungen NICHT Übertreiben max. 2 Seiten
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%CheatSheet V0.01
+
+ 
+
+
+%\begin{comment}
+gedruckt werden sollte auf hochwertigem papier min.  80 g/m2
+
+
+Dies ist \textbf{Version \hgbthesisDate} 
+Es gibt Abkürzungen \va 
+\emph{Word}
+Referenzeren zu label \ref{ch:TechnischeInfos}.
+(s.\ Abschn.~\ref{sec:latex}).
+(s.\ Kapitel~\ref{sec:latex}).
+
+nicht einrücken des Absatzes
+\noindent
+
+
+Abbildungen Abb.~\ref{fig:CocaColaig}
+
+optionales bindestrich + Anführungszeichen + fußnote 
+tat\-säch\-lich "`Paketen"' \footnote{Nicht mehr verfügbar.}
+Fußnoten immer mit Punkt abschließen
+
+beidseitig einrücken
+\begin{quote}
+    
+    beidseitig einrücken
+\end{quote}
+
+url
+\url{www.simeens.com/}
+
+linebreak (böse)
+\newline or \\
+
+offline url (ohne resource)
+\nolinkurl{.../lange/uurl}
+
+
+zentrierter text 
+\begin{center}%
+\begin{tabular}{l}
+\nolinkurl{daniel@vogt.ml} \\
+Daniel Vogt \\
+DHBW Kalsruhe -- Siemens AG\\
+Germany
+\end{tabular}
+\end{center}
+
+
+italic
+\begin{quote}
+\verb!\textit{Variable}! $\rightarrow$ \textit{Variable}
+\end{quote}
+
+
+
+zentrierte box
+\begin{center}
+\setlength{\fboxrule}{0.2mm}
+\setlength{\fboxsep}{2mm}
+\fbox{%
+\begin{minipage}{0.9\textwidth}
+Besonders
+\end{minipage}
+}
+\end{center}
+
+
+andere box
+\begin{center}
+\fbox{
+    \centering
+\begin{minipage}{0.95\textwidth}
+\medskip
+sth
+\medskip
+\end{minipage}%
+}
+\end{center}
+
+
+
+
+
+
+großer abstand (statt nur einrücken)
+\SuperPar 
+Manchmal
+
+
+drei punkte
+\ldots
+
+optionales break ohne bindestrich
+(weiter-){\optbreaknh}entwickelt.%
+
+typewriter
+\texttt{babel}
+
+
+
+\begin{itemize}
+\item Produktbezeichnungen \textit{italic}    %schräg
+%
+\item Markennamen \textsl{salted}   %krass
+%
+\item Überschriften und Bezeicher \textbf{Boldface}   %fett
+%
+\item \textsc{Test \emph{Emphasize}}  %richtig schräg
+%
+\item \underline{Unterstreichungen} %dont use that!   
+%
+\end{itemize}
+
+
+Überschriften
+\chapter{title}
+\section{title}
+\subsection{title}
+\subsubsection{title}
+
+coole Überschriften (In paragraph)
+\paragraph{title}
+\subparagraph{title}
+
+
+mehrzeiliges \verb typewriter listing
+
+Listen
+\begin{verbatim}
+punkte
+\begin{itemize}     ... \end{itemize}
+nummern
+\begin{enumerate}   ... \end{enumerate}
+text
+\begin{description} ... \end{description}
+\end{verbatim}
+
+
+Überschrift mit Fußnote
+\chapter[Schlussbemerkungen]%
+{Schlussbemerkungen%
+\protect\footnote{Diese Anmerkung ....}}%
+
+
+horizontaler platzhalter (tabulator)
+\hspace{1em} oder \hspace{1em} lol
+
+
+Objekt referenzieren
+Kapitel ref	\ref{key}
+seite referenzieren
+Seiten ref		\pageref{key}
+
+
+Englisch spacing 
+\nonfrenchspacing
+
+Gedankenstriche
+für englisch---ja
+für deutsch -- ja
+
+einfache Anführungszeichen
+\glq \grq  (im englischen einfach ganz normal)
+normale anführungszeichen
+``bla'' "`bla"'
+
+
+optinal hyphon \-
+
+
+schlampig setzen  (zeile mit überlenge)
+\begin{sloppypar}
+Dieser Absatz wird ``schlampig'' (sloppy) gesetzt ...
+\end{sloppypar}
+
+
+
+Einfache Tabellen \ref{tab:abkuerzungenq}
+\begin{table}
+\caption{In \texttt{hgb.sty} definierte Abkürzungsmakros.}
+\label{tab:abkuerzungenq}
+\centering\small
+\begin{tabular}{lcccc}
+\emph{Element} & 
+\texttt{diplom} &
+\texttt{master} &
+\texttt{bachelor} & 
+\texttt{praktikum} 
+\\
+\hline
+\verb!\title! 			& $+$ & $+$ & $+$ & $+$ \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+Tabelle mit leerspalte \ref{tab:abkuerzungen}
+\begin{table}
+\caption{In \texttt{hgb.sty} definierte Abkürzungsmakros.}
+\label{tab:abkuerzungen}
+\centering
+\begin{tabular}{llp{2cm}ll}
+\hline
+\verb+\bzw+        & \bzw   & &  \verb+\ua+         & \ua \\
+\hline
+\end{tabular}
+\end{table}
+
+
+Tabelle flattersatz  (sieht besser aus bei mehr text)
+
+\begin{table}
+    \caption{Definitionen der Spalten.}
+    \label{tab:apalten} 
+    \def\rr{\rightskip=0pt plus1em \spaceskip=.3333em \xspaceskip=.5em\relax}
+    \centering\small
+    \begin{tabular}{l|p{0.6\textwidth}}
+        \emph{Name} & \texttt{Inhalt} 
+        \\
+        \hline
+        \hline
+        Something 			& {\rr Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text.} \\
+        Something 			& {\rr Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text.} \\    Something 			& {\rr Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text.} \\    Something 			& {\rr Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text. Long Long long text.} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+
+Mehr tabelllen optionen
+\begin{table}
+\caption{Prozessor-Familien im Überblick.}
+\label{tab:processors}
+\centering
+\setlength{\tabcolsep}{5mm}	% separator between columns
+\def\arraystretch{1.25}			% vertical stretch factor (Standard = 1.0)
+\begin{tabular}{|r||c|c|c|} \hline
+& \emph{PowerPC} & \emph{Pentium} & \emph{Athlon} \\
+\hline\hline
+Manufacturer & Motorola & Intel & AMD \\
+\hline
+Speed & high & medium & high   \\
+\hline
+Price & high & high   & medium \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{comment} 
+bild \{fig:CocaCola}
+\begin{figure}
+\centering
+\includegraphics[width=.95\textwidth]{pcs7} %{CS0031}
+\caption{Coca-Cola Werbung 1940  }
+\label{fig:CocaCola}
+\end{figure}
+\end{comment}
+
+
+
+Caption Platzierung
+bei Abbildungen unten
+bei Tabellen oben
+bei code oben
+
+
+latex code
+\begin{LaTeXCode}
+\begin{figure}
+    \centering
+    \includegraphics[width=.95\textwidth]{pcs7} %{CS0031}
+    \caption{Coca-Cola Werbung 1940  }
+    \label{fig:CocaCola}
+\end{figure}
+\end{LaTeXCode}
+
+
+keine Zeilennummerierung
+\verb|\begin{LaTeXCode}[numbers=none]|
+
+
+Bildquelle~\cite{IBM360}
+in caption
+
+
+\begin{comment} 
+
+Bild Rahmen
+\FramePic{\includegraphics[height=50mm]{pcs7}}
+\end{comment}
+
+
+
+
+Vektorgrafik Freehand??!! (Programm)
+
+TrueType BaKoMa Fonts Collection (um in bildern schöne schrift zu haben)
+
+
+
+%\end{comment}
+
+
+%\begin{comment}
+
+%Code Listings
+
+\begin{CCode}
+	...
+\end{CCode}
+C++ (ISO):
+\begin{CppCode}
+	...
+\end{CppCode}
+Java:
+\begin{JavaCode}
+	...
+\end{JavaCode}
+JavaScript:
+\begin{JsCode}
+	...
+\end{JsCode}
+PHP:
+\begin{PhpCode}
+	...
+\end{PhpCode}
+HTML:
+\begin{HtmlCode}
+	...
+\end{HtmlCode}
+CSS:
+\begin{CssCode}
+	...
+\end{CssCode}
+XML:
+\begin{XmlCode}
+	...
+\end{XmlCode}
+LaTeX:
+\begin{LaTeXCode}
+	...
+\end{LaTeXCode}
+Generisch:
+\begin{GenericCode}
+	...
+\end{GenericCode}
+%\end{comment}
+
+%\begin{comment}
+%In listings kann latex verwendet werden am besten so oder in kommentaren
+%Escape with /+\label{ExampleCodeLabel}+/
+
+
+Nummerierung vortlaaufend (weiter mit der zeilennummer von davor)
+\verb|\begin{some Code}[firstnumber=last]|
+
+große code listings
+als float element bei > mehrere zeien  (max 2 seiten)
+\begin{program}
+\caption{Der Titel zu diesem Programmstück.}
+\label{prog:xyz}
+\begin{JavaCode}
+class IrgendWas {
+...
+}
+\end{JavaCode}
+\end{program}
+
+
+listing im anhang
+\begin{footnotesize}
+\verbatiminput{Projektarbeit2.tex}
+\end{footnotesize}
+
+
+Verweise kapiteln buch
+\cite[Kap.\ 5]{Kopka98}
+
+zitat Quellenverweis
+volgende passage aus .. \cite{Kopka98}
+dann \verb|\begin{quote}| Hier kommt das Zitat
+
+
+
+JabRef hilfe für Bibtex    (Programm)
+
+
+
+
+
+
+Formeln beispiel
+$\bar{a} = f' \cdot \bigl( \frac{f'}{K \cdot u_{\max}} + 1 \bigr)$
+$\infty$
+
+
+
+zentrieren ohne numerierung  doppel \verb|$|
+$$ y = 4 x^2 $$
+
+
+gleichungen mit nummern
+\begin{equation}
+f(k) = \frac{1}{N} \sum_{i=0}^{k-1} i^2 . 
+\label{eq:MyFirstEquation}
+\end{equation}
+
+
+mehrzeilige gleichungen 
+\begin{align}
+f_1 (x,y) &= \frac{1}{1-x} + y , \label{eq:f1} \\
+f_2 (x,y) &= \frac{1}{1+y} - x , \label{eq:f2}
+\end{align}
+
+
+
+fallunterscheidungen 
+\begin{equation}
+f(i) =
+\begin{cases}
+0             & \text{für $i = 0$},\\
+f(i-1) + f(i) & \text{für $i > 0$}.
+\end{cases}
+\end{equation}
+
+
+
+Matrizen
+
+\begin{equation}
+\label{eq:f1}
+\begin{pmatrix} x' \\ y' \end{pmatrix}
+= 
+\begin{pmatrix}
+\cos \phi & -\sin \phi \\
+\sin \phi & \phantom{-}\cos \phi
+\end{pmatrix} 
+\cdot
+\begin{pmatrix}	x \\ y \end{pmatrix} ,
+\end{equation}
+
+
+beachte \phantom{-} für unsichtbare zeichen
+alternativ \verb|\bmatrix| für eckige klammern
+
+
+
+verwiese auf gleichungen einfach in runden klammern 
+(\ref{eq:f1})
+oder Gl.~\ref{eq:f1}
+
+
+alternativ gleichung zentrieren
+\begin{center}
+$x \in \R$ , $k \in \N_0$, $z = (a + \mathrm{i} \cdot b) \in \Cpx$.
+\end{center}
+
+multiplizieren
+$\cdot$ und kein * verwenden
+fleder angeben
+$25 \times 70$
+
+
+variablen namen mit mehreren zeichen 
+\verb|\mathit{variable}|
+
+Beispiel 
+\begin{center}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llll}
+\text{Richtig:}  & $\mathit{Scalefactor}^2$ & $\leftarrow$ & \verb!$\mathit{Scalefactor}^2$!
+\end{tabular}
+\end{center}
+
+
+Funktionsnamen und Einheiten in Roman schrift
+$\mathrm{Distance} $
+
+
+vor maßeinheiten ein leerzeichen
+euro \euro\ text
+
+
+dezimalzahlen
+$3{,}141$
+
+
+Mathematica zum gleichungen erstellen ???!!!    (Programm)
+%\end{comment}
+
+
+%%Algotihmen Formal definieren
+%\begin{comment}
+\begin{algorithm}[tbp]
+\caption{Bikubische Interpolation in 2D.
+$w_{\mathrm{cub}}()$ in Zeile \ref{alg:wcub} bezeichnet die 
+eindimensionale kubische Interpolationsfunktion.}
+\label{alg:Example}
+
+\begin{algorithmic}[1]% [1] heißt alle Zeilen werden numeriert
+\Procedure{BicubicInterpolation}{$I, x, y$} \Comment{$x,y \in \R$}
+\Statex Returns the interpolated value of the image $I$ 
+at the continuous position $(x, y)$.
+
+\State $\mathit{val} \gets 0$
+
+\For{$j \gets 0, \ldots, 3$} \Comment{iterate over 4 lines}
+\State $v \gets \lfloor y \rfloor - 1 + j$
+\State $p \gets 0$
+
+\For{$i \gets 0, \ldots, 3$} \Comment{iterate over 4 columns}
+\State $u \gets \lfloor x \rfloor - 1 + i$
+\State $p \gets p + I(u,v) \cdot w_{\mathrm{cub}}(x - u )$
+\label{alg:wcub}
+\EndFor
+
+\State $\mathit{val} \gets \mathit{val} + p \cdot w_{\mathrm{cub}}(y - v)$
+\EndFor
+
+\State\Return $\mathit{val}$
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+%\end{comment}
+
+%%%%Quellen
+
+
+
+%Kein getrentes quellenverzeichnis
+%MakeBibliography[nosplit]{title}  
+
+
+
+%Typen von Quellen
+%\begin{comment}
+	\begin{table}
+	\caption{Quellenarten und empfohlene BibTeX-Eintragstypen.}
+	\label{tab:QuellenUndEintragstypen}
+	\centering
+	\begin{tabular}{ll}
+	\hline
+	Kategorie \emph{literature} & \texttt{@\emph{type}} \\
+	\hline
+	Buch (Textbuch, Monographie) & \texttt{@book }\\
+	Sammelband (Hrsg.\ + mehrere Autoren) & \texttt{@incollection} \\
+	Konferenz-, Tagungsband & \texttt{@inproceedings}\\
+	Beitrag in Zeitschrift, Journal & \texttt{@article} \\
+	Bachelor-, Master-, Diplomarbeit, Dissertation & \texttt{@thesis} \\
+	Technischer Bericht, Laborbericht & \texttt{@techreport} \\
+	Handbuch, Produktbeschreibung, Norm & \texttt{@manual} \\
+	Gesetzestext, Verordnung etc. & \texttt{@misc}\\
+	%
+	\hline
+	Kategorie \emph{avmedia} & \\
+	\hline
+	Audio (CD) & \texttt{@audio} \\
+	Video (auf VHS, DVD, Blu-ray Disk) & \texttt{@video}\\
+	Film (Kino) & \texttt{@movie}\\
+	Computer Game, Softwareprodukt & \texttt{@software} \\
+	%
+	\hline
+	Kategorie \emph{online} & \\
+	\hline
+	Webseite, Wiki-Eintrag, Blog etc. & \texttt{@online} \\
+	Online-Video, Bild, Grafik & \texttt{@online}\\
+	\end{tabular}
+	\end{table}
+%\end{comment}
+
+
+
+%einzelne quellenangabe einfügen (wie sie am ende stehen)
+%\printbibliography[keyword=incollectionexample1,heading=noheader]\nocite{Ears99}
+
+
+%Beipsiele für jeden Typ
+\begin{comment}
+%buch
+@book{BurgerBurge06,
+author={Burger, Wilhelm and Burge, Mark},
+title={Digitale Bildverarbeitung -- 
+Eine Einführung mit Java und ImageJ},
+publisher={Springer-Verlag},
+address={Heidelberg},
+edition={2},
+year={2005},
+hyphenation={german}
+
+%sammelband  (Abgeshclossener Beitrag in (sammel)buch)
+@incollection{Ears99,
+author={Burge, Mark and Burger, Wilhelm},
+title={Ear Biometrics},
+booktitle={Biometrics: Personal Identification in Networked Society},
+publisher={Kluwer Academic Publishers},
+year={1999},
+address={Boston},
+editor={Jain, Anil K. and Bolle, Ruud and Pankanti, Sharath},
+chapter={13},
+pages={273-285},
+hyphenation={english}
+
+
+%Konferenzbeitrag   \texttt{venue} = Tagungsort
+@inproceedings{Burger87,
+author={Burger, Wilhelm and Bhanu, Bir},
+title={Qualitative Motion Understanding},
+booktitle={Proceedings of the Intl.\ Joint Conference on Artificial Intelligence},
+year={1987},
+month={5},
+editor={McDermott, John P.},
+venue={Mailand},
+publisher={Morgan Kaufmann Publishers},
+address={San Francisco},
+pages={819-821},
+hyphenation={english}
+}
+
+
+%Artikel Zeitung Journal Zeitschrift
+@article{Mermin89,
+author={Mermin, Nathaniel David},
+title={What's wrong with these equations?},
+journal={Physics Today},
+volume={42},
+number={10},
+year={1989},
+pages={9-11},
+hyphenation={english}
+}
+
+
+%Bachelor, Master, Diplomarbeiten
+%type = phdthesis; mathesis;  Diplomarbeit; Bachelorarbeit
+@thesis{Eberl87,
+author={Eberl, Gerhard},
+title={Automatischer Landeanflug durch Rechnersehen},
+type={phdthesis},
+year={1987},
+month={8},
+institution={Universität der Bundeswehr, Fakultät für Raum- und Luftfahrttechnik},
+address={München},
+url={http://theses.fh-hagenberg.at/thesis/Artner07},
+hyphenation={german}
+}
+
+
+%numerisierte berichte; Forschungsberichte; Unternehmen, Projekten; Hochschulinstituten
+@techreport{Drake48,
+author={Drake, Huber M. and McLaughlin, Milton D. and Goodman, Harold R.},
+title={Results obtained during accelerated transonic tests of the {Bell} {XS-1} airplane in flights to a {MACH} number of 0.92},
+institution={NASA Dryden Flight Research Center},
+year={1948},
+month={1},
+address={Edwards, CA},
+number={NACA-RM-L8A05A},
+url={http://www.nasa.gov/centers/dryden/pdf/...05A.pdf},
+hyphenation={english}
+}
+
+
+%Ohne Autor Anleitungen; white paper; präsentationen; Produkt Beschriebeungen; Normen
+%wichtig doppelklammer beim author
+@manual{amsldoc02,
+author={{American Mathematical Society}},
+title={User's Guide for the {\tt amsmath} Package},
+year={2002},
+version={2.0},
+url={ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf},
+hyphenation={english}
+}
+
+%Gesetzestexte
+@misc{OoeRaumordnungsgesetz94,
+title={Oberösterreichisches Raumordnungsgesetz 1994},
+howpublished={LGBl 1994/114 idF 1995/93},
+url={http://www.ris.bka.gv.at/Dokumente/LrOO/...538.pdf},
+hyphenation={german}
+}
+
+
+%Aduio, Video auf DVD CD ... physisch 
+@audio{Zappa95,
+author={Zappa, Frank},
+title={Freak Out},
+howpublished={Audio-CD},
+year={1995},
+month={5},
+note={Rykodisc, New York},
+hyphenation={english},
+keywords={audioexample1}
+}
+
+
+
+%video physisch
+@video{Futurama99,
+author={Groening, Matt},
+title={Futurama -- Season 1 Collection},
+howpublished={DVD},
+year={2002},
+month={2},
+note={Twentieth Century Fox Home Entertainment},
+hyphenation={english}
+}
+
+
+%movie
+@movie{Nosferatu,
+title={Nosferatu -- A Symphony of Horrors},
+howpublished={Film},
+year={1922},
+note={Drehbuch/Regie: F. W. Murnau. Mit Max Schreck, Gustav von Wangenheim, Greta Schröder.},
+hyphenation={english}
+}
+
+
+%computer spiele, software
+@software{LegendOfZelda98,
+author={Miyamoto, Shigeru and Aonuma, Eiji and Koizumi, Yoshiaki},
+title={The Legend of Zelda: Ocarina of Time},
+howpublished={N64-Spielmodul},
+publisher={Nintendo},
+year={1998},
+hyphenation={english}
+}
+
+
+%%Auf webseiten verweißen
+\footnote{\url{http://www.panasonic-broadcast.de}}
+
+%Atribut url ist bei den anderen typen immer zulässig (wenn das Primärpublikum nicht online ist)
+
+
+%ausßschließlich online verfügbar:
+% Wiki-Eintrag, ein digitales Bild,	eine Software, ein YouTube-Video oder ein Blog-Eintrag.
+
+@online{WikiReliquienschrein,
+url={http://de.wikipedia.org/wiki/Reliquienschrein},
+urldate={2011-06-19}
+}
+
+%online video 
+@online{HistoryOfComputers2008,
+title={History of Computers},
+year={2008},
+url={http://www.youtube.com/watch?v=LvKxJ3bQRKE},
+hyphenation={english}
+}
+
+%Bild
+@online{IBM360,
+url={http://www.plyojump.com/classes/mainframe_era.html}
+}
+
+%falls ein usb stick oder cd beigelegt wir ... dann können auch offline links in den quellen verwendet werden \nolinkurl{...} im note feld
+
+
+%alle Werke auflisten \nocite{*}
+
+ 
+\end{comment}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ 
+
+
+
+

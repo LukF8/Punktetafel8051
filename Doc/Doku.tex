@@ -1,0 +1,71 @@
+\documentclass[projekt,german]{hgbthesis}
+% Zulässige Class Options: 
+%   Typ der Arbeit: diplom, master (default), bachelor, praktikum 
+%   Hauptsprache: german (default), english
+%%------------------------------------------------------------
+
+%Zeilenabstand anpassen
+%\usepackage[onehalfspacing]{setspace}
+
+%\usepackage[doublespacing]{setspace}
+
+\graphicspath{{images/}}    % wo liegen die Bilder? 
+%\addbibresource{literatur.bib}  	% Angabe der BibTeX-Datei, % utf8-change
+\bibliography{literatur.bib}
+
+
+%%%----------------------------------------------------------
+\begin{document}
+%%%----------------------------------------------------------
+
+% Einträge für ALLE Arbeiten: --------------------------------
+\title{Anzeigetafel für ein Fußballspiel}
+\author{Daniel H.\ Vogt und Lukas Feltes}
+\studiengang{Angewandte Informatik}
+\studienort{Karlsruhe}
+\studienuni{DHBW Karlsruhe}
+\abgabedatum{2018}{06}{14}	% {YYYY}{MM}{DD}
+ 
+\semester{Sommersemester 2018}  
+ 
+\nummer{9552394 und 9584715}    
+ 
+
+\cclicense
+
+%\strictlicense  % erzeugt restriktive Lizenzformel
+
+%%%----------------------------------------------------------
+
+\frontmatter
+\maketitle
+\tableofcontents
+%%%----------------------------------------------------------
+
+%\include{kurzfassung}		
+%\include{abstract}			
+
+%%%----------------------------------------------------------
+\mainmatter         % Hauptteil (ab hier arab. Seitenzahlen)
+%%%----------------------------------------------------------
+
+\include{einleitung}		% ggfs. weglassen
+\include{grundlagen}
+\include{konzept}
+\include{implementation}
+\include{zusammenfassung}
+
+
+%%%----------------------------------------------------------
+%%%Anhang
+%\appendix
+%\include{anhang}
+
+%%%----------------------------------------------------------
+\MakeBibliography
+%%%----------------------------------------------------------
+
+%%%Messbox zur Druckkontrolle
+\include{messbox}
+
+\end{document}

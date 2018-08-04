@@ -1,0 +1,53 @@
+\chapter{Grundlagen} 
+\label{cha:Grundlagen}
+ 
+ \section{Assembler} 
+Der erste bekannte Assembler wurde zwischen 1948 und 1950 geschrieben.
+
+Eine Assemblersprache, kurz auch Assembler genannt, ist eine Programmiersprache, die auf den Befehlssatz einer bestimmten Prozessorarchitektur ausgerichtet ist. Assemblersprachen  sind maschinenorientierte Programmiersprachen. Anstelle eines schwer verständlichen Binärcodes der Maschinensprache können Befehle durch verständliche Symbole in Textform dargestellt werden. Zur Übersetzung eines Assemblerprogramms in Maschinencode wird eine Übersetzungssoftware genutzt. Der Quelltext in Assemblersprache wird auch als Assemblercode bezeichnet.
+
+Die verschiedenen Computerarchitekturen nutzen dabei eigene Maschinensprachen und damit auch eigene Assemblersprachen. Diese Sprachen unterscheiden sich der verschiedenen Architekturen in Anzahl und Typ der Operationen. Jedoch haben alle Architekturen dieselben grundlegenden Operationen. \cite{Assemblersprache}   
+ 
+ \section{Der 8051 Mikrocontroller} 
+ 
+ Die \textbf{8051}-Familie der Mikrocontroller ist eine Prozessorarchitektur von Intel. Sie ist mittlerweile im Originalen veraltet, aber es gibt weitere Varianten, die teilweise durchaus auf aktuellem Stand sind. 
+ 
+ Der 8051 ist ein Mikrocontroller bei dem Befehls- und Datenspeicher logisch getrennt sind, auch wenn diese über einen einzigen Bus adressiert werden. Ob es sich dabei um eine Harvard oder eine von Neumann-Architektur handelt, ist umstritten.\cite{8051}
+ 
+Ein paar der verwendeten Befehle des 8051 Befehlssatzes sind folgende: 
+ 
+ \begin{GenericCode}
+ mov A, R7	;Register in Akku laden
+ mov R0, A	;Akku in Register laden
+ setb C		;Set C - for demo purpose	
+ JB 042d, bc2	;springe bei gesetzer BAdr
+ jmp @A+DPTR	;Brechneter jump
+ ret		;reti for interrupt
+ 	
+ \end{GenericCode}
+ \cite{Befehlssatz}
+ 
+  
+ 
+ \section{Entwicklungsumgebung MCU-8051 IDE} 
+ 
+ In Zeiten von Emacs, Vim (und Intellij) ist es schwer sich in eine IDE einzufinden, welche viele Bugs hat und langsam arbeitet. 
+ Glücklicherweise ist man nicht gezwungen in dieser IDE zu programmieren. Es reicht wenn man dieses Werkzeug nur zum Compilieren und Simulieren nutzt. 
+ 
+ Der Editor dieser IDE unterstützt einen nur sehr wenig beim entwickeln. 
+ Die Autovervollständigung ist mangelhaft, da Symbole teilweise nicht gefunden werden. Die Vorschläge für die Vervollständigung erfolgen oft ohne den Kontext oder sind unzureichend vollständig. 
+ 
+ Das Laden und Erstellen von virtueller Hardware ist zu kompliziert und langsam. Die virtuelle Hardware ist mit Abstand das langsamste an der IDE. Konkurrenzprodukte sind um ein Mehrfaches schneller. Komplexe Programme lassen sich damit nur langsam simulieren, große Timer-Intervalle sind zu vermeiden (da es Tage dauern könnte, bis es zu einem Ereignis kommen könnte).
+ Der "'Fade out Intervall"` der virtuellen Hardware ist unberechenbar und unabhängig von der Ausfuhrgeschwindigkeit und somit nicht sehr realitätsnah.  
+ 
+ Gut an der IDE sind die gut strukturieren Anzeigen. So lassen sich schnell die Registerinhalte und andere relevante Hardwareinformation auf einen Blick erkennen. Auch die Möglichkeit das Programm Schrittweise oder auch rückwärts ablaufen zu lassen ist hilfreich.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
